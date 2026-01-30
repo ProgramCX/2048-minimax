@@ -1,99 +1,137 @@
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import type { GameState, Direction, GameHistory } from '@/types/game'
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
+import type { Tile, Direction } from '../types/game';
 import {
-  move,
-  canMove,
-  checkWin,
+  initializeBoard,
+  moveTiles,
   addRandomTile,
-  initializeGame,
-  saveBestScore
-} from '@/utils/gameLogic'
+  canMove,
+  hasWon,
+  calculateScore,
+  getEmptyPositions,
+} from '../utils/gameLogic';
 
 export const useGameStore = defineStore('game', () => {
-  // 状态
-  const gameState = ref<GameState>(initializeGame())
-  const history = ref<GameHistory[]>([])
-  
+  // 游戏状态
+  const board = ref<(Tile | null)[][]>(initializeBoard());
+  const score = ref(0);
+  const bestScore = ref(Number(localStorage.getItem('2048-best-score') || 0));
+  const moves = ref(0);
+  const isGameOver = ref(false);
+  const isWon = ref(false);
+  const isPlayingAfterWin = ref(false);
+
   // 计算属性
-  const currentBoard = computed(() => gameState.value.board)
-  const score = computed(() => gameState.value.score)
-  const bestScore = computed(() => gameState.value.bestScore)
-  const isGameOver = computed(() => gameState.value.isGameOver)
-  const isWin = computed(() => gameState.value.isWin)
-  const canUndo = computed(() => gameState.value.canUndo)
-  const moves = computed(() => gameState.value.moves)
-  
-  // 游戏操作
-  function makeMove(direction: Direction) {
-    if (isGameOver.value) return
+  const canMakeMove = computed(() => {
+    return !isGameOver.value && canMove(board.value);
+  });
+
+  // 游戏初始化
+  const initializeGame = () => {
+    board.value = initializeBoard();
+    score.value = 0;
+    moves.value = 0;
+    isGameOver.value = false;
+    isWon.value = false;
+    isPlayingAfterWin.value = false;
+  };
+
+  // 重置游戏
+  const resetGame = () => {
+    initializeGame();
+  };
+
+  // 执行移动
+  const makeMove = (direction: Direction) => {
+    if (!canMakeMove.value) return;
+
+    const newBoard = moveTiles(board.value, direction);
     
-    const result = move(gameState.value.board, direction)
-    if (!result.moved) return
-    
-    // 保存历史记录
-    history.value.push({
-      board: gameState.value.board.map(row => [...row]),
-      score: gameState.value.score,
-      moves: gameState.value.moves
-    })
-    
-    // 更新游戏状态
-    gameState.value.board = addRandomTile(result.board)
-    gameState.value.score += result.score
-    gameState.value.moves++
-    gameState.value.canUndo = history.value.length > 0
-    
-    // 检查游戏结束
-    gameState.value.isWin = checkWin(gameState.value.board)
-    gameState.value.isGameOver = !canMove(gameState.value.board)
-    
-    // 保存最佳分数
-    if (gameState.value.score > gameState.value.bestScore) {
-      gameState.value.bestScore = gameState.value.score
-      saveBestScore(gameState.value.score)
+    if (newBoard !== board.value) {
+      // 移动成功
+      board.value = newBoard;
+      moves.value++;
+      
+      // 检查是否获胜
+      if (!isWon.value && hasWon(board.value)) {
+        isWon.value = true;
+      }
+      
+      // 检查是否游戏结束
+      if (!canMove(board.value)) {
+        isGameOver.value = true;
+      }
+      
+      // 添加新方块
+      board.value = addRandomTile(board.value);
+      
+      // 更新分数
+      score.value = calculateScore(board.value);
+      
+      // 更新最高分
+      if (score.value > bestScore.value) {
+        bestScore.value = score.value;
+        localStorage.setItem('2048-best-score', bestScore.value.toString());
+      }
     }
-  }
-  
-  function undo() {
-    if (history.value.length === 0) return
+  };
+
+  // 胜利后继续游戏
+  const continueAfterWin = () => {
+    if (isWon.value) {
+      isPlayingAfterWin.value = true;
+    }
+  };
+
+  // 获取方块颜色
+  const getTileColor = (row: number, col: number): string => {
+    const tile = board.value[row][col];
+    if (!tile) return '#cdc1b4';
     
-    const previousState = history.value.pop()!
-    gameState.value.board = previousState.board.map(row => [...row])
-    gameState.value.score = previousState.score
-    gameState.value.moves = previousState.moves
-    gameState.value.isGameOver = false
-    gameState.value.isWin = false
-    gameState.value.canUndo = history.value.length > 0
-  }
-  
-  function resetGame() {
-    gameState.value = initializeGame()
-    history.value = []
-  }
-  
-  function continueGame() {
-    gameState.value.isWin = false
-  }
-  
+    const colors: { [key: number]: string } = {
+      2: '#eee4da',
+      4: '#ede0c8',
+      8: '#f2b179',
+      16: '#f59563',
+      32: '#f67c5f',
+      64: '#f65e3b',
+      128: '#edcf72',
+      256: '#edcc61',
+      512: '#edc850',
+      1024: '#edc53f',
+      2048: '#edc22e',
+    };
+    
+    return colors[tile.value] || '#3c3a32';
+  };
+
+  // 获取方块文字颜色
+  const getTileTextColor = (row: number, col: number): string => {
+    const tile = board.value[row][col];
+    if (!tile) return '#776e65';
+    
+    return tile.value <= 4 ? '#776e65' : '#f9f6f2';
+  };
+
   return {
     // 状态
-    gameState,
-    history,
-    
-    // 计算属性
-    currentBoard,
+    board,
     score,
     bestScore,
-    isGameOver,
-    isWin,
-    canUndo,
     moves,
+    isGameOver,
+    isWon,
+    isPlayingAfterWin,
     
-    // 操作
-    makeMove,
-    undo,
+    // 计算属性
+    canMakeMove,
+    
+    // 方法
+    initializeGame,
     resetGame,
-    continueGame
-  }
-})
+    makeMove,
+    continueAfterWin,
+    getTileColor,
+    getTileTextColor,
+  };
+});
