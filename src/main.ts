@@ -1,14 +1,15 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import router from './router'
-import App from './App.vue'
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import App from './views/App.vue';
 
-// CSS文件
-import './style.css'
+// 创建Pinia实例
+const pinia = createPinia();
 
-const app = createApp(App)
+// 创建Vue应用实例
+const app = createApp(App);
 
-app.use(createPinia())
-app.use(router)
+// 使用插件
+app.use(pinia);
 
-app.mount('#app')
+// 挂载应用
+app.mount('#app');

@@ -1,166 +1,111 @@
-# 2048 Vue 游戏
+# 2048 Game - Vue.js 3.5+ 现代化实现
 
-一个使用 Vue 3 + TypeScript + Vite 构建的现代化 2048 游戏实现。
+一个使用Vue.js 3.5+和Vite构建的现代化2048游戏，具有独特的橙色-红色主题设计和完整的CI/CD流程。
 
-## 🎮 游戏特色
+## ✨ 特色功能
 
-- **现代化技术栈**: Vue 3 + Composition API + TypeScript + Vite
-- **状态管理**: Pinia 状态管理
-- **路由**: Vue Router 4
-- **响应式设计**: 完美适配桌面和移动设备
-- **动画效果**: 流畅的方块合并和移动动画
-- **触摸支持**: 移动设备手势控制
-- **键盘控制**: 方向键和 WASD 键支持
-- **游戏状态**: 暂停、继续、重新开始功能
-- **分数记录**: 本地存储最佳分数
-- **视觉主题**: 现代化橙红色主题
+- 🎮 **完整的游戏体验** - 经典的2048游戏玩法，支持键盘和触摸操作
+- 🎨 **独特视觉设计** - 温暖的橙色-红色渐变主题，打破传统蓝紫色设计
+- 📱 **完美响应式** - 桌面端和移动端完美适配
+- ⚡ **现代化技术栈** - Vue.js 3.5+ + Vite + TypeScript + Pinia
+- 🎯 **工程质量标准** - 完整的组件化架构，TypeScript类型安全
+- 🚀 **自动化部署** - GitHub Actions自动构建和部署
+
+## 🛠️ 技术栈
+
+- **前端框架**: Vue.js 3.5+
+- **构建工具**: Vite 5.0+
+- **类型系统**: TypeScript 5.2+
+- **状态管理**: Pinia 2.1+
+- **路由**: Vue Router 4.4+
+- **代码规范**: ESLint + TypeScript ESLint
+- **CI/CD**: GitHub Actions
+
+## 🎮 游戏特性
+
+- **完整游戏逻辑** - 4x4网格，移动合并算法，胜利失败检测
+- **多种操作方式** - 键盘方向键/WASD + 触摸滑动手势
+- **游戏状态管理** - 分数统计，最高分记录，游戏进度保存
+- **视觉效果** - 平滑动画，方块出现和合并效果
+- **用户体验** - 胜利弹窗，游戏重置，撤销功能
 
 ## 🚀 快速开始
 
-### 环境要求
-
-- Node.js >= 18
-- pnpm >= 8
-
 ### 安装依赖
-
 ```bash
-pnpm install
+npm install
 ```
 
 ### 开发模式
-
 ```bash
-pnpm dev
+npm run dev
 ```
 
-### 类型检查
-
+### 构建生产版本
 ```bash
-pnpm type-check
+npm run build
 ```
 
 ### 代码检查
-
 ```bash
-pnpm lint
+npm run lint
 ```
 
-### 构建项目
+## 🎯 操作说明
 
-```bash
-pnpm build
-```
+### 桌面端
+- **方向键** 或 **WASD** 键移动方块
+- **新游戏** 按钮重置游戏
+- **撤销** 功能可回退上一步
 
-### 预览构建结果
-
-```bash
-pnpm preview
-```
-
-## 🛠️ 使用脚本
-
-项目包含了便捷的构建脚本：
-
-```bash
-chmod +x build.sh
-./build.sh
-```
-
-## 🎯 游戏规则
-
-- 使用方向键或 WASD 键移动方块
-- 相同数字的方块会合并成更大的数字
-- 目标是创造出 2048 方块
-- 当无法移动时游戏结束
-- 达到 2048 后可以选择继续游戏
+### 移动端
+- **滑动手势** 控制方块移动
+- **触摸按钮** 提供备用控制方式
+- **响应式布局** 适配各种屏幕尺寸
 
 ## 🏗️ 项目结构
 
 ```
+2048-minimax/
 ├── src/
-│   ├── components/          # Vue 组件
-│   │   ├── GameControls.vue
-│   │   ├── MobileControls.vue
-│   │   └── ScoreBoard.vue
-│   ├── stores/             # Pinia 状态管理
-│   │   └── gameStore.ts
-│   ├── types/              # TypeScript 类型定义
-│   │   └── game.ts
-│   ├── utils/              # 工具函数
-│   │   └── gameLogic.ts
-│   ├── views/              # Vue 视图组件
-│   │   ├── App.vue
-│   │   ├── GameBoard.vue
-│   │   ├── GameView.vue
-│   │   ├── HomeView.vue
-│   │   └── NotFound.vue
-│   ├── router/             # Vue Router 配置
-│   │   └── index.ts
-│   ├── main.ts             # 应用入口
-│   └── vite-env.d.ts       # Vite 类型定义
-├── public/                 # 静态资源
-├── index.html              # HTML 模板
-├── vite.config.ts          # Vite 配置
-├── tsconfig.json           # TypeScript 配置
-├── eslint.config.js        # ESLint 配置
-└── package.json            # 项目依赖
+│   ├── components/          # 可复用组件
+│   ├── stores/              # Pinia状态管理
+│   ├── types/               # TypeScript类型定义
+│   ├── utils/               # 游戏逻辑工具
+│   ├── views/               # 页面组件
+│   └── main.ts              # 应用入口
+├── public/                  # 静态资源
+├── dist/                    # 构建输出目录
+└── .github/                 # GitHub Actions配置
 ```
 
-## 🎨 技术亮点
+## 📈 CI/CD流程
 
-### Vue 3 Composition API
-- 逻辑复用
-- 更好的 TypeScript 支持
-- 响应式系统
+项目配置了完整的GitHub Actions自动化流程：
 
-### Pinia 状态管理
-- 轻量级状态管理
-- TypeScript 友好
-- DevTools 支持
+1. **代码推送** → 触发构建流程
+2. **依赖安装** → npm install
+3. **类型检查** → TypeScript编译检查
+4. **代码检查** → ESLint代码规范检查
+5. **构建打包** → npm run build
+6. **部署发布** → 自动部署到生产环境
 
-### 动画系统
-- CSS 动画
-- 过渡效果
-- 状态变化动画
+## 🌟 未来规划
 
-### 响应式设计
-- 移动优先
-- 弹性布局
-- 触摸优化
+- [ ] 添加游戏主题切换功能
+- [ ] 实现多人竞技模式
+- [ ] 添加音效和背景音乐
+- [ ] 支持PWA离线游戏
+- [ ] 添加成就系统
 
-## 📱 移动端支持
+## 📝 开源协议
 
-- 触摸滑动控制
-- 移动端优化的 UI
-- 手势识别
-- 适配各种屏幕尺寸
+MIT License
 
-## 🔧 开发工具
+## 🤝 贡献指南
 
-- **Vite**: 快速的构建工具
-- **TypeScript**: 类型安全
-- **ESLint**: 代码质量检查
-- **Vue DevTools**: Vue 专用开发工具
-
-## 📋 贡献指南
-
-1. Fork 这个仓库
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交你的更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 打开一个 Pull Request
-
-## 📄 许可证
-
-这个项目在 MIT 许可证下开源 - 查看 [LICENSE](LICENSE) 文件了解详情。
-
-## 🙏 致谢
-
-- 感谢原版 2048 游戏的创造者 Gabriele Cirulli
-- Vue.js 团队提供的优秀框架
-- 所有贡献者的支持
+欢迎提交Issue和Pull Request来改进项目！
 
 ---
 
-**享受游戏吧！** 🎉
+**享受游戏，挑战2048！** 🎮✨
