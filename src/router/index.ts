@@ -1,33 +1,27 @@
-import type { RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
+import HomeView from '@/views/HomeView.vue'
+import GameView from '@/views/GameView.vue'
+import NotFound from '@/views/NotFound.vue'
 
-const routes: RouteRecordRaw[] = [
-  {
-    path: '/',
-    name: 'Home',
-    component: () => import('@/views/HomeView.vue'),
-    meta: {
-      title: '2048 Game',
-      description: 'Play the classic 2048 puzzle game',
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: '/',
+      name: 'home',
+      component: HomeView
     },
-  },
-  {
-    path: '/game',
-    name: 'Game',
-    component: () => import('@/views/GameView.vue'),
-    meta: {
-      title: 'Game - 2048',
-      description: 'Play 2048 game',
+    {
+      path: '/game',
+      name: 'game',
+      component: GameView
     },
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'NotFound',
-    component: () => import('@/views/NotFound.vue'),
-    meta: {
-      title: 'Page Not Found',
-      description: 'The page you are looking for does not exist',
-    },
-  },
-]
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: NotFound
+    }
+  ]
+})
 
-export default routes
+export default router

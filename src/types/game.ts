@@ -1,43 +1,45 @@
-export interface Tile {
-  id: string;
-  value: number;
-  position: { row: number; col: number };
-  isNew?: boolean;
-  isMerged?: boolean;
-  mergedFrom?: Tile[];
-}
-
+// 游戏状态类型定义
 export interface GameState {
-  board: (Tile | null)[][];
-  score: number;
-  bestScore: number;
-  isGameOver: boolean;
-  isWon: boolean;
-  canMove: boolean;
-  moves: number;
+  board: number[][]
+  score: number
+  bestScore: number
+  isGameOver: boolean
+  isWin: boolean
+  canUndo: boolean
+  moves: number
 }
 
-export type Direction = 'up' | 'down' | 'left' | 'right';
-
-export interface Position {
-  row: number;
-  col: number;
+// 移动方向枚举
+export enum Direction {
+  UP = 'up',
+  DOWN = 'down',
+  LEFT = 'left',
+  RIGHT = 'right'
 }
 
-export const BOARD_SIZE = 4;
-export const WINNING_TILE = 2048;
+// 游戏动作接口
+export interface GameAction {
+  type: string
+  payload?: any
+}
 
-export const TILE_COLORS: Record<number, string> = {
-  0: '#cdc1b4',
-  2: '#eee4da',
-  4: '#ede0c8',
-  8: '#f2b179',
-  16: '#f59563',
-  32: '#f67c5f',
-  64: '#f65e3b',
-  128: '#edcf72',
-  256: '#edcc61',
-  512: '#edc850',
-  1024: '#edc53f',
-  2048: '#edc22e',
-};
+// 历史记录接口
+export interface GameHistory {
+  board: number[][]
+  score: number
+  moves: number
+}
+
+// 游戏配置接口
+export interface GameConfig {
+  size: number
+  target: number
+  startTiles: number
+}
+
+// 默认游戏配置
+export const DEFAULT_CONFIG: GameConfig = {
+  size: 4,
+  target: 2048,
+  startTiles: 2
+}
