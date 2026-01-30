@@ -1,109 +1,102 @@
 <template>
   <div class="score-board">
-    <div class="score-container" :class="{ 'score-updated': isScoreUpdated }">
-      <div class="score-label">SCORE</div>
+    <div class="score-card">
+      <div class="score-label">分数</div>
       <div class="score-value">{{ score }}</div>
     </div>
-    <div class="best-container">
-      <div class="best-label">BEST</div>
-      <div class="best-value">{{ bestScore }}</div>
+    
+    <div class="score-card">
+      <div class="score-label">最佳</div>
+      <div class="score-value">{{ bestScore }}</div>
+    </div>
+    
+    <div class="score-card">
+      <div class="score-label">步数</div>
+      <div class="score-value">{{ moves }}</div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed } from 'vue'
+import { useGameStore } from '@/stores/gameStore'
 
-interface Props {
-  score: number;
-  bestScore: number;
-}
-
-const props = defineProps<Props>();
-
-const isScoreUpdated = ref(false);
-
-watch(() => props.score, (newScore, oldScore) => {
-  if (newScore > oldScore) {
-    isScoreUpdated.value = true;
-    setTimeout(() => {
-      isScoreUpdated.value = false;
-    }, 600);
-  }
-});
+const gameStore = useGameStore()
+const score = computed(() => gameStore.score)
+const bestScore = computed(() => gameStore.bestScore)
+const moves = computed(() => gameStore.moves)
 </script>
 
 <style scoped>
 .score-board {
   display: flex;
-  gap: 10px;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
 }
 
-.score-container,
-.best-container {
-  background: rgba(255, 107, 53, 0.2);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 107, 53, 0.3);
-  padding: 10px 15px;
-  border-radius: 12px;
+.score-card {
+  background: linear-gradient(135deg, #FF6B35 0%, #FF3838 100%);
+  color: white;
+  padding: 15px 25px;
+  border-radius: 8px;
   text-align: center;
-  min-width: 80px;
-  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 100px;
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+  transition: transform 0.3s ease;
 }
 
-.score-container:hover,
-.best-container:hover {
+.score-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6);
 }
 
-.score-container.score-updated {
-  animation: scorePulse 0.6s ease-in-out;
-}
-
-.score-label,
-.best-label {
+.score-label {
   font-size: 12px;
-  color: #FF8E53;
+  font-weight: bold;
   text-transform: uppercase;
-  font-weight: bold;
   letter-spacing: 1px;
+  opacity: 0.9;
+  margin-bottom: 5px;
 }
 
-.score-value,
-.best-value {
-  font-size: 20px;
+.score-value {
+  font-size: 24px;
   font-weight: bold;
-  color: #ffffff;
-  margin-top: 5px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  line-height: 1;
 }
 
-@keyframes scorePulse {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+@media (max-width: 768px) {
+  .score-board {
+    gap: 15px;
   }
-  50% {
-    transform: scale(1.1);
-    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.8);
+  
+  .score-card {
+    padding: 12px 20px;
+    min-width: 80px;
   }
-  100% {
-    transform: scale(1);
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+  
+  .score-label {
+    font-size: 11px;
+  }
+  
+  .score-value {
+    font-size: 20px;
   }
 }
 
 @media (max-width: 480px) {
   .score-board {
-    flex-direction: column;
-    width: 100%;
+    gap: 10px;
   }
   
-  .score-container,
-  .best-container {
-    flex: 1;
+  .score-card {
+    padding: 10px 15px;
+    min-width: 70px;
+  }
+  
+  .score-value {
+    font-size: 18px;
   }
 }
 </style>
